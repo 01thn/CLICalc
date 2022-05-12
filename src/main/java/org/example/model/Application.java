@@ -1,8 +1,20 @@
 package org.example.model;
 
+import org.example.service.Calculator;
+import org.springframework.stereotype.Component;
+
 import java.util.Scanner;
 
+@Component
 public class Application {
+
+    private ConsoleWriter cw;
+    private ConsoleReader cr;
+
+    public Application(ConsoleWriter cw, ConsoleReader cr) {
+        this.cw = cw;
+        this.cr = cr;
+    }
 
     public void start() {
         boolean isActive = true;
@@ -10,52 +22,41 @@ public class Application {
 
         System.out.println("Hi there!");
         while (isActive) {
-            System.out.println("Please, input first variable: ");
-            int var1 = scanner.nextInt();
-            System.out.println("Please, input second variable: ");
-            int var2 = scanner.nextInt();
-            System.out.println("What do you want to do?");
-            System.out.println("Input 1 - for sum\nInput 2 - for minus\nInput 3 - for multiply\nInput 4 - for divide");
+            cw.output("Please, input first variable: ");
+            double var1 = cr.getDouble();
+            cw.output("Please, input second variable: ");
+            double var2 = cr.getDouble();
+            cw.output("What do you want to do?");
+            cw.output("Input 1 - for sum\nInput 2 - for minus\nInput 3 - for multiply\nInput 4 - for divide");
 
-            int answer = scanner.nextInt();
+            int answer = cr.getInt();
+            double result;
             switch (answer) {
                 case 1:
-                    System.out.println(sum(var1, var2));
+                    result = Calculator.sum(var1, var2);
+                    cw.output(String.valueOf(result));
                     break;
                 case 2:
-                    System.out.println(minus(var1, var2));
+                    result = Calculator.minus(var1, var2);
+                    cw.output(String.valueOf(result));
                     break;
                 case 3:
-                    System.out.println(multiply(var1, var2));
+                    result = Calculator.multiply(var1, var2);
+                    cw.output(String.valueOf(result));
                     break;
                 case 4:
-                    System.out.println(divide(var1, var2));
+                    result = Calculator.divide(var1, var2);
+                    cw.output("result is :" + String.valueOf(result));
                     break;
                 default:
-                    System.out.println("Something went wrong. Try again");
+                    cw.output("Something went wrong. Try again");
                     continue;
             }
-            System.out.println("Do you want to continue?\nInput 0 for exit or any other number to continue");
-            int userAnswer = scanner.nextInt();
+            cw.output("Do you want to continue?\nInput 0 for exit or any other number to continue");
+            int userAnswer = cr.getInt();
             if (userAnswer == 0) isActive = false;
         }
 
         System.out.println("Bye!");
-    }
-
-    private double sum(double var1, double var2) {
-        return var1 + var2;
-    }
-
-    private double minus(double var1, double var2) {
-        return var1 - var2;
-    }
-
-    private double multiply(double var1, double var2) {
-        return var1 * var2;
-    }
-
-    private double divide(double var1, double var2) {
-        return var1 / var2;
     }
 }
