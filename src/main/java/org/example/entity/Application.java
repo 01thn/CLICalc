@@ -1,7 +1,7 @@
 package org.example.entity;
 
 import org.example.service.Calculator;
-import org.example.storage.InMemoryUserStorage;
+import org.example.dao.InMemoryUserDAO;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -10,9 +10,9 @@ public class Application {
     private ConsoleWriter cw;
     private ConsoleReader cr;
 
-    private InMemoryUserStorage userStorage;
+    private InMemoryUserDAO userStorage;
 
-    public Application(ConsoleWriter cw, ConsoleReader cr, InMemoryUserStorage userStorage) {
+    public Application(ConsoleWriter cw, ConsoleReader cr, InMemoryUserDAO userStorage) {
         this.cw = cw;
         this.cr = cr;
         this.userStorage = userStorage;
@@ -20,14 +20,24 @@ public class Application {
 
     public void start() {
         cw.output("Hi there!");
+        while (startMenu()==null){}
+        int code = calculate();
+        cw.output("Application was stopped with code " + code);
+    }
+
+    private Session startMenu(){
+        Session session = null;
         cw.startMenu();
         switch (cr.getInt()) {
             case 1:
-                while(!signUp()){}
+                while (!signUp()) {}
                 cw.output("Congrats! You're successfully signed up");
+                break;
+            case 2:
+                session = signIn();
+                cw.output("Success!");
         }
-        int code = calculate();
-        cw.output("Application was stopped with code " + code);
+        return session;
     }
 
     private boolean signUp() {
@@ -36,14 +46,34 @@ public class Application {
         String name = cr.getWord();
         cw.output("Nice! What do you wanna use as login?");
         String login = cr.getWord();
+        if(userStorage.userExists(login)){
+            cw.outputError("User with such login exists");
+            return false;
+        }
         cw.output("Choose a password for your account");
         String password = cr.getWord();
         if (userStorage.userSignUp(login, name, password)) {
             result = true;
         } else {
-            cw.output("Something went wrong");
+            cw.outputError("Something went wrong");
         }
         return result;
+    }
+
+    private Session signIn(){
+        cw.output("Input your login: ");
+        String login = cr.getWord();
+        if (!userStorage.userExists(login)) {
+            cw.outputError("Looks like you aren't signed up");
+            return null;
+        }
+        cw.output("Input your password: ");
+        String password = cr.getWord();
+        if(!userStorage.authUser(login, password)){
+            cw.output("Wrong credos");
+            return null;
+        }
+        return new Session(userStorage.getUser(login));
     }
 
     private int calculate() {
@@ -76,7 +106,7 @@ public class Application {
                     cw.outputResult(result);
                     break;
                 default:
-                    cw.output("Something went wrong. Try again");
+                    cw.outputError("Something went wrong. Try again");
                     continue;
             }
             cw.output("Do you want to continue?\nInput 0 for exit or any other number to continue");

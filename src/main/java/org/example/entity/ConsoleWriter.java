@@ -23,4 +23,8 @@ public class ConsoleWriter {
                 Input 2 to sign in
                 """);
     }
+
+    public void outputError(String message){
+        System.err.println(message);
+    }
 }

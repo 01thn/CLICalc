@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 @Configuration
 @ComponentScan(basePackages = "org.example.entity")
-@ComponentScan(basePackages = "org.example.storage")
+@ComponentScan(basePackages = "org.example.dao")
 @ComponentScan(basePackages = "org.example.validator")
 public class RootConfiguration {
     @Bean

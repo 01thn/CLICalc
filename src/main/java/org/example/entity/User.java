@@ -24,6 +24,14 @@ public class User {
         return id;
     }
 
+    public String getLogin() {
+        return login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
     public void addToStory(Operation operation){
         story.add(operation);
     }
