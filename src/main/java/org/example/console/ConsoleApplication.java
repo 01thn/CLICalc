@@ -1,114 +1,116 @@
-package org.example.entity;
+package org.example.console;
 
-import org.example.service.Calculator;
-import org.example.dao.InMemoryUserDAO;
+import lombok.AllArgsConstructor;
+import org.example.entity.Operation;
+import org.example.entity.Session;
+import org.example.entity.User;
+import org.example.service.CalculatorService;
+import org.example.service.UserService;
+import org.example.util.ConsoleReader;
+import org.example.util.ConsoleWriter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Application {
-
-    private ConsoleWriter cw;
-    private ConsoleReader cr;
-
-    private InMemoryUserDAO userStorage;
-
-    public Application(ConsoleWriter cw, ConsoleReader cr, InMemoryUserDAO userStorage) {
-        this.cw = cw;
-        this.cr = cr;
-        this.userStorage = userStorage;
-    }
+@AllArgsConstructor
+public class ConsoleApplication implements Application {
+    private final ConsoleWriter cw;
+    private final ConsoleReader cr;
+    private final UserService userService;
+    private final CalculatorService calculatorService;
 
     public void start() {
         cw.output("Hi there!");
-        while (startMenu()==null){}
-        int code = calculate();
+        Session session;
+        do {
+            session = startMenu();
+        } while (session == null);
+        int code = calculate(session);
         cw.output("Application was stopped with code " + code);
     }
 
-    private Session startMenu(){
+    private Session startMenu() {
         Session session = null;
         cw.startMenu();
         switch (cr.getInt()) {
             case 1:
-                while (!signUp()) {}
+                while (!signUp()) {
+                }
                 cw.output("Congrats! You're successfully signed up");
                 break;
             case 2:
-                session = signIn();
-                cw.output("Success!");
+                User user = signIn();
+                if (user == null) {
+                    break;
+                }
+                session = new Session(user);
         }
         return session;
     }
 
     private boolean signUp() {
-        boolean result = false;
         cw.output("How can I call you?");
         String name = cr.getWord();
         cw.output("Nice! What do you wanna use as login?");
         String login = cr.getWord();
-        if(userStorage.userExists(login)){
+        if (userService.findByUsername(login) != null) {
             cw.outputError("User with such login exists");
             return false;
         }
         cw.output("Choose a password for your account");
         String password = cr.getWord();
-        if (userStorage.userSignUp(login, name, password)) {
-            result = true;
-        } else {
-            cw.outputError("Something went wrong");
-        }
-        return result;
+        userService.save(new User(login, name, password));
+        return true;
     }
 
-    private Session signIn(){
+    private User signIn() {
         cw.output("Input your login: ");
         String login = cr.getWord();
-        if (!userStorage.userExists(login)) {
+        User user = userService.findByUsername(login);
+        if (user == null) {
             cw.outputError("Looks like you aren't signed up");
             return null;
         }
         cw.output("Input your password: ");
         String password = cr.getWord();
-        if(!userStorage.authUser(login, password)){
-            cw.output("Wrong credos");
+        if (!userService.authByUsernameAndPassword(login, password)) {
+            cw.outputError("Wrong credos");
             return null;
         }
-        return new Session(userStorage.getUser(login));
+        return user;
     }
 
-    private int calculate() {
+    private int calculate(Session session) {
         boolean isActive = true;
+        User user = session.getUser();
+        Operation operation;
+        String opearationType;
         while (isActive) {
             cw.output("Please, input first variable: ");
             double var1 = cr.getDouble();
             cw.output("Please, input second variable: ");
             double var2 = cr.getDouble();
             cw.output("What do you want to do?");
-            cw.output("Input 1 - for sum\nInput 2 - for minus\nInput 3 - for multiply\nInput 4 - for divide");
-
+            cw.output("Input 1 - for add\nInput 2 - for sub\nInput 3 - for mul\nInput 4 - for div");
             int answer = cr.getInt();
-            double result;
             switch (answer) {
                 case 1:
-                    result = Calculator.sum(var1, var2);
-                    cw.outputResult(result);
+                    opearationType = "add";
                     break;
                 case 2:
-                    result = Calculator.minus(var1, var2);
-                    cw.outputResult(result);
+                    opearationType = "sub";
                     break;
                 case 3:
-                    result = Calculator.multiply(var1, var2);
-                    cw.outputResult(result);
+                    opearationType = "mul";
                     break;
                 case 4:
-                    result = Calculator.divide(var1, var2);
-                    cw.outputResult(result);
+                    opearationType = "div";
                     break;
                 default:
-                    cw.outputError("Something went wrong. Try again");
+                    System.out.println("Something went wrong");
                     continue;
             }
+            operation = calculatorService.calc(var1, var2, opearationType, user);
+            System.out.println(operation);
             cw.output("Do you want to continue?\nInput 0 for exit or any other number to continue");
             int userAnswer = cr.getInt();
             if (userAnswer == 0) isActive = false;

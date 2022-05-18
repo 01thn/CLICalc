@@ -9,9 +9,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 @Configuration
-@ComponentScan(basePackages = "org.example.entity")
-@ComponentScan(basePackages = "org.example.dao")
-@ComponentScan(basePackages = "org.example.validator")
+@ComponentScan(basePackages = "org.example")
 public class RootConfiguration {
     @Bean
     public Scanner scanner() {

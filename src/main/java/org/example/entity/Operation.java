@@ -1,55 +1,28 @@
 package org.example.entity;
 
-public class Operation {
-    long id;
-    long userId;
-    double var1;
-    double var2;
-    String operation;
-    double result;
+import lombok.Data;
 
-    public Operation(long id, long userId, double var1, double var2, String operation, double result) {
-        this.id = id;
-        this.userId = userId;
+@Data
+public class Operation {
+    private static long counter = 0L;
+    private long id;
+    private User user;
+    private double var1;
+    private double var2;
+    private String operation;
+    private double result;
+
+    public Operation(User user, double var1, double var2, String operation, double result) {
+        this.id = counter++;
+        this.user = user;
         this.var1 = var1;
         this.var2 = var2;
         this.operation = operation;
         this.result = result;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public double getVar1() {
-        return var1;
-    }
-
-    public double getVar2() {
-        return var2;
-    }
-
-    public String getOperation() {
-        return operation;
-    }
-
-    public double getResult() {
-        return result;
-    }
-
     @Override
     public String toString() {
-        return "Operation{" +
-                "id=" + id +
-                ", userId=" + userId +
-                ", var1=" + var1 +
-                ", var2=" + var2 +
-                ", operation='" + operation + '\'' +
-                ", result=" + result +
-                '}';
+        return String.format("The operation of %f %s %f is %f", var1, operation, var2, result);
     }
 }

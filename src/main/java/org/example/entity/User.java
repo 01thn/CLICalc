@@ -1,11 +1,14 @@
 package org.example.entity;
 
+import lombok.Data;
+
 import java.util.LinkedList;
 import java.util.List;
 
+@Data
 public class User {
-    private static Long counter = 0L;
-    private Long id;
+    private static long counter = 0L;
+    private long id;
     private String login;
     private String name;
     private String password;
@@ -20,30 +23,4 @@ public class User {
         this.story = new LinkedList<>();
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void addToStory(Operation operation){
-        story.add(operation);
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", login='" + login + '\'' +
-                ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", story=" + story +
-                '}';
-    }
 }
