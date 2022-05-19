@@ -5,7 +5,7 @@ import org.example.entity.User;
 import java.util.List;
 
 public interface UserStorage {
-    void save(User user);
+    boolean save(User user);
 
     List<User> findAll();
 

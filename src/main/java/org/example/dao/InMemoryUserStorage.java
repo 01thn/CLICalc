@@ -13,8 +13,9 @@ public class InMemoryUserStorage implements UserStorage {
     private final Map<String, User> map = new HashMap<>();
 
     @Override
-    public void save(User user) {
-		map.put(user.getLogin(), user);
+    public boolean save(User user) {
+        map.put(user.getLogin(), user);
+        return true;
     }
 
     @Override
@@ -24,7 +25,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User findByUsername(String username) {
-        if(map.containsKey(username)){
+        if (map.containsKey(username)) {
             return map.get(username);
         }
         return null;

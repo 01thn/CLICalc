@@ -2,9 +2,6 @@ package org.example.entity;
 
 import lombok.Data;
 
-import java.util.LinkedList;
-import java.util.List;
-
 @Data
 public class User {
     private static long counter = 0L;
@@ -12,7 +9,6 @@ public class User {
     private String login;
     private String name;
     private String password;
-    private List<Operation> story;
 
     public User(String login, String name, String password) {
         counter++;
@@ -20,7 +16,12 @@ public class User {
         this.login = login;
         this.name = name;
         this.password = password;
-        this.story = new LinkedList<>();
     }
 
+    public User(long id, String login, String name, String password) {
+        this.id = id;
+        this.login = login;
+        this.name = name;
+        this.password = password;
+    }
 }

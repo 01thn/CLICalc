@@ -3,18 +3,21 @@ package org.example.dao;
 import org.example.entity.Operation;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toCollection;
 
 @Component
 public class InMemoryOperationStorage implements OperationStorage {
 
     private final Map<String, List<Operation>> map = new HashMap<>();
 
+    public InMemoryOperationStorage() {
+    }
+
     @Override
-    public void save(Operation operation) {
+    public boolean save(Operation operation) {
         if (map.containsKey(operation.getUser().getLogin())) {
             List<Operation> operations = map.get(operation.getUser().getLogin());
             operations.add(operation);
@@ -23,6 +26,7 @@ public class InMemoryOperationStorage implements OperationStorage {
             List<Operation> operations = map.get(operation.getUser().getLogin());
             operations.add(operation);
         }
+        return true;
     }
 
     @Override
@@ -32,8 +36,6 @@ public class InMemoryOperationStorage implements OperationStorage {
 
     @Override
     public List<Operation> findAll() {
-        List<Operation> operations = new ArrayList<>();
-        map.values().forEach(operation->operations.add((Operation) operation));
-        return operations;
+        return new ArrayList(map.values());
     }
 }

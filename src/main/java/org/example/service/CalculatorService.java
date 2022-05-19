@@ -12,7 +12,7 @@ public class CalculatorService {
 
     private final OperationStorage operationStorage;
 
-    public CalculatorService(@Qualifier("inMemoryOperationStorage")
+    public CalculatorService(@Qualifier("SQLOperationStorage")
                              OperationStorage operationStorage) {
         this.operationStorage = operationStorage;
     }

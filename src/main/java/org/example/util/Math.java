@@ -1,9 +1,10 @@
 package org.example.util;
 
 public final class Math {
-    private Math(){
+    private Math() {
 
     }
+
     public static double add(double var1, double var2) {
         return var1 + var2;
     }
