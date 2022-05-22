@@ -24,7 +24,7 @@ public class InMemoryStorageTest {
     public void findUserByLogin() {
         InMemoryUserStorage inMemoryUserStorage = new InMemoryUserStorage();
         inMemoryUserStorage.save(new User(0, "test", "test", "test"));
-        Assert.assertNotNull(inMemoryUserStorage.findByUsername("test"));
+        Assert.assertNotNull(inMemoryUserStorage.getUserByLogin("test"));
     }
 
     @Test

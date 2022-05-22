@@ -10,6 +10,12 @@ import java.util.List;
 @Component
 public class SQLUserStorage implements UserStorage {
     private Connection connection;
+    private final String SAVE_USER = "insert into users (login, name, password) values(?,?,?)";
+    private final String GET_ALL_USERS = "select * from users";
+    private final String GET_USER_BY_LOGIN = "select * from users where login=?";
+    private final String GET_USER_BY_LOGIN_AND_PASS = "select * from users where login=? and password=?";
+    private final String GET_USER_ID_BY_LOGIN = "select id from users where login=?";
+    private final String GET_USER_BY_ID = "select * from users where id=?";
 
     public SQLUserStorage(Connection connection) {
         this.connection = connection;
@@ -18,7 +24,7 @@ public class SQLUserStorage implements UserStorage {
     @Override
     public boolean save(User user) {
         try {
-            PreparedStatement ps = connection.prepareStatement("insert into users (login, name, password) values(?,?,?)");
+            PreparedStatement ps = connection.prepareStatement(SAVE_USER);
             ps.setString(1, user.getLogin());
             ps.setString(2, user.getName());
             ps.setString(3, user.getPassword());
@@ -34,7 +40,7 @@ public class SQLUserStorage implements UserStorage {
         ArrayList<User> users = new ArrayList<>();
         try {
             Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("select * from users");
+            ResultSet rs = statement.executeQuery(GET_ALL_USERS);
             while (rs.next()) {
                 users.add(new User(rs.getLong(1),
                         rs.getString(2),
@@ -49,10 +55,10 @@ public class SQLUserStorage implements UserStorage {
     }
 
     @Override
-    public User findByUsername(String username) {
+    public User getUserByLogin(String login) {
         try {
-            PreparedStatement ps = connection.prepareStatement("select * from users where login=?");
-            ps.setString(1, username);
+            PreparedStatement ps = connection.prepareStatement(GET_USER_BY_LOGIN);
+            ps.setString(1, login);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return new User(
@@ -71,7 +77,7 @@ public class SQLUserStorage implements UserStorage {
     @Override
     public boolean authByUsernameAndPassword(String username, String password) {
         try {
-            PreparedStatement ps = connection.prepareStatement("select * from users where login=? and password=?");
+            PreparedStatement ps = connection.prepareStatement(GET_USER_BY_LOGIN_AND_PASS);
             ps.setString(1, username);
             ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
@@ -86,7 +92,7 @@ public class SQLUserStorage implements UserStorage {
 
     public Long getUserIdByLogin(String login) {
         try {
-            PreparedStatement ps = connection.prepareStatement("select id from users where login=?");
+            PreparedStatement ps = connection.prepareStatement(GET_USER_ID_BY_LOGIN);
             ps.setString(1, login);
             ResultSet rs = ps.executeQuery();
             if (rs.next())
@@ -99,7 +105,7 @@ public class SQLUserStorage implements UserStorage {
 
     public User getUserById(Long id) {
         try {
-            PreparedStatement ps = connection.prepareStatement("select * from users where id=?");
+            PreparedStatement ps = connection.prepareStatement(GET_USER_BY_ID);
             ps.setLong(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {

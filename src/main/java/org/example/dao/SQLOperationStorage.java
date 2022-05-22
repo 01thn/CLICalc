@@ -11,6 +11,9 @@ import java.util.List;
 public class SQLOperationStorage implements OperationStorage {
     private Connection connection;
     private SQLUserStorage sqlUserStorage;
+    private final String SAVE_USER = "insert into operation (id_user, var1, var2, operation, result) values (?, ?, ?, ?, ?)";
+    private final String FIND_OPERATION_BY_USER_ID = "select * from operation where id_user=?";
+    private final String GET_ALL_OPERATIONS = "select * from operation";
 
     public SQLOperationStorage(Connection connection, SQLUserStorage sqlUserStorage) {
         this.connection = connection;
@@ -20,7 +23,7 @@ public class SQLOperationStorage implements OperationStorage {
     @Override
     public boolean save(Operation operation) {
         try {
-            PreparedStatement ps = connection.prepareStatement("insert into operation (id_user, var1, var2, operation, result) values (?, ?, ?, ?, ?)");
+            PreparedStatement ps = connection.prepareStatement(SAVE_USER);
             ps.setLong(1, operation.getUser().getId());
             ps.setDouble(2, operation.getVar1());
             ps.setDouble(3, operation.getVar2());
@@ -37,7 +40,7 @@ public class SQLOperationStorage implements OperationStorage {
     public List<Operation> findAllByUser(String username) {
         ArrayList<Operation> operations = new ArrayList<>();
         try {
-            PreparedStatement ps = connection.prepareStatement("select * from operation where id_user=?");
+            PreparedStatement ps = connection.prepareStatement(FIND_OPERATION_BY_USER_ID);
             ps.setLong(1, sqlUserStorage.getUserIdByLogin(username));
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -61,7 +64,7 @@ public class SQLOperationStorage implements OperationStorage {
         ArrayList<Operation> operations = new ArrayList<>();
         try {
             Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("select * from operation");
+            ResultSet rs = statement.executeQuery(GET_ALL_OPERATIONS);
             while (rs.next()) {
                 operations.add(new Operation(rs.getLong(1),
                         sqlUserStorage.getUserById(rs.getLong(2)),

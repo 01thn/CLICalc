@@ -24,9 +24,9 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User findByUsername(String username) {
-        if (map.containsKey(username)) {
-            return map.get(username);
+    public User getUserByLogin(String login) {
+        if (map.containsKey(login)) {
+            return map.get(login);
         }
         return null;
     }

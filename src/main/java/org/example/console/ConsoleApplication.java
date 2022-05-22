@@ -24,7 +24,7 @@ public class ConsoleApplication implements Application {
         do {
             session = startMenu();
         } while (session == null);
-        int code = calculate(session);
+        int code = work(session);
         cw.output("Application was stopped with code " + code);
     }
 
@@ -43,6 +43,9 @@ public class ConsoleApplication implements Application {
                     break;
                 }
                 session = new Session(user);
+                break;
+            default:
+                cw.outputError("Input error");
         }
         return session;
     }
@@ -52,34 +55,24 @@ public class ConsoleApplication implements Application {
         String name = cr.getWord();
         cw.output("Nice! What do you wanna use as login?");
         String login = cr.getWord();
-        if (userService.findByUsername(login) != null) {
-            cw.outputError("User with such login exists");
-            return false;
-        }
         cw.output("Choose a password for your account");
         String password = cr.getWord();
-        userService.save(new User(login, name, password));
-        return true;
+        return userService.save(login, name, password);
     }
 
     private User signIn() {
         cw.output("Input your login: ");
         String login = cr.getWord();
-        User user = userService.findByUsername(login);
-        if (user == null) {
-            cw.outputError("Looks like you aren't signed up");
-            return null;
-        }
         cw.output("Input your password: ");
         String password = cr.getWord();
-        if (!userService.authByUsernameAndPassword(login, password)) {
-            cw.outputError("Wrong credos");
+        if (userService.authByUsernameAndPassword(login, password)) {
+            return userService.getUserByLogin(login);
+        } else {
             return null;
         }
-        return user;
     }
 
-    private int calculate(Session session) {
+    private int work(Session session) {
         boolean isActive = true;
         User user = session.getUser();
         Operation operation;
@@ -92,30 +85,31 @@ public class ConsoleApplication implements Application {
             cw.output("What do you want to do?");
             cw.output("Input 1 - for add\nInput 2 - for sub\nInput 3 - for mul\nInput 4 - for div");
             int answer = cr.getInt();
-            switch (answer) {
-                case 1:
-                    opearationType = "add";
-                    break;
-                case 2:
-                    opearationType = "sub";
-                    break;
-                case 3:
-                    opearationType = "mul";
-                    break;
-                case 4:
-                    opearationType = "div";
-                    break;
-                default:
-                    System.out.println("Something went wrong");
-                    continue;
-            }
+            opearationType = getOperationType(answer);
+            if (opearationType == null) continue;
             operation = calculatorService.calc(var1, var2, opearationType, user);
-            System.out.println(operation);
+            cw.output(String.valueOf(operation));
             cw.output("Do you want to continue?\nInput 0 for exit or any other number to continue");
             int userAnswer = cr.getInt();
             if (userAnswer == 0) isActive = false;
         }
-        System.out.println("Bye!");
+        cw.output("Bye!");
         return 0;
+    }
+
+    private String getOperationType(int answer) {
+        switch (answer) {
+            case 1:
+                return "add";
+            case 2:
+                return "sub";
+            case 3:
+                return "mul";
+            case 4:
+                return "div";
+            default:
+                cw.outputError("Something went wrong");
+                return null;
+        }
     }
 }

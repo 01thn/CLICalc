@@ -9,7 +9,7 @@ public interface UserStorage {
 
     List<User> findAll();
 
-    User findByUsername(String username);
+    User getUserByLogin(String login);
 
     boolean authByUsernameAndPassword(String username, String password);
 }
