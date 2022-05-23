@@ -11,5 +11,5 @@ public interface UserStorage {
 
     User getUserByLogin(String login);
 
-    boolean authByUsernameAndPassword(String username, String password);
+    boolean authByUsernameAndPassword(String login, String password);
 }

@@ -32,8 +32,8 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public boolean authByUsernameAndPassword(String username, String password) {
-        User bufUser = map.get(username);
-        return bufUser.getLogin().equals(username) && bufUser.getPassword().equals(password);
+    public boolean authByUsernameAndPassword(String login, String password) {
+        User bufUser = map.get(login);
+        return bufUser.getLogin().equals(login) && bufUser.getPassword().equals(password);
     }
 }

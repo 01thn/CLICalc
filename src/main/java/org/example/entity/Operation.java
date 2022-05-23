@@ -1,11 +1,19 @@
 package org.example.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Data
+import javax.persistence.*;
+
+@Data @NoArgsConstructor
+@Entity
+@Table(name = "operation")
 public class Operation {
     private static long counter = 0L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @OneToOne(cascade = CascadeType.ALL)
     private User user;
     private double var1;
     private double var2;

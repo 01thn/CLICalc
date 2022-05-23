@@ -74,7 +74,7 @@ public class ConsoleApplication implements Application {
 
     private int work(Session session) {
         boolean isActive = true;
-        User user = session.getUser();
+        User user = session.user();
         Operation operation;
         String opearationType;
         while (isActive) {

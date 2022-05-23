@@ -75,10 +75,10 @@ public class SQLUserStorage implements UserStorage {
     }
 
     @Override
-    public boolean authByUsernameAndPassword(String username, String password) {
+    public boolean authByUsernameAndPassword(String login, String password) {
         try {
             PreparedStatement ps = connection.prepareStatement(GET_USER_BY_LOGIN_AND_PASS);
-            ps.setString(1, username);
+            ps.setString(1, login);
             ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {

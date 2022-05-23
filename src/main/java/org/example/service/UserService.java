@@ -15,7 +15,7 @@ public class UserService {
     private final UserValidator userValidator;
     private final ConsoleWriter consoleWriter;
 
-    public UserService(@Qualifier("SQLUserStorage") UserStorage userStorage, UserValidator userValidator, ConsoleWriter consoleWriter) {
+    public UserService(@Qualifier("hibernateUserStorage") UserStorage userStorage, UserValidator userValidator, ConsoleWriter consoleWriter) {
         this.userStorage = userStorage;
         this.userValidator = userValidator;
         this.consoleWriter = consoleWriter;
