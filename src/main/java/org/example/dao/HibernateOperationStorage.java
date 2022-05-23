@@ -10,9 +10,11 @@ import java.util.List;
 @Component
 public class HibernateOperationStorage implements OperationStorage {
     private SessionFactory sessionFactory;
+    private HibernateUserStorage hibernateUserStorage;
 
-    public HibernateOperationStorage(SessionFactory sessionFactory) {
+    public HibernateOperationStorage(SessionFactory sessionFactory, HibernateUserStorage hibernateUserStorage) {
         this.sessionFactory = sessionFactory;
+        this.hibernateUserStorage = hibernateUserStorage;
     }
 
     @Override
@@ -25,12 +27,11 @@ public class HibernateOperationStorage implements OperationStorage {
 
     @Override
     public List<Operation> findAllByUser(String username) {
-//        Session session = sessionFactory.openSession();
-//        List<Operation> operations = session.createQuery("from Operation where user=:user", Operation.class)
-//                .setParameter("user", hibernateUserStorage.getUserByLogin(username))
-//                .getResultList();
-//        return operations;
-        return null;
+        Session session = sessionFactory.openSession();
+        List<Operation> operations = session.createQuery("from Operation where user=:user", Operation.class)
+                .setParameter("user", hibernateUserStorage.getUserByLogin(username))
+                .getResultList();
+        return operations;
     }
 
     @Override
