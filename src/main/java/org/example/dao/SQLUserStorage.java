@@ -31,7 +31,7 @@ public class SQLUserStorage implements UserStorage {
             ps.execute();
             return true;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            return false;
         }
     }
 
@@ -85,7 +85,7 @@ public class SQLUserStorage implements UserStorage {
                 return true;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            return false;
         }
         return false;
     }

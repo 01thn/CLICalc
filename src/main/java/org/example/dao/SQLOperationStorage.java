@@ -32,7 +32,7 @@ public class SQLOperationStorage implements OperationStorage {
             ps.execute();
             return true;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            return false;
         }
     }
 
