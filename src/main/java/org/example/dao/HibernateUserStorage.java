@@ -6,6 +6,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.NoResultException;
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Component
@@ -17,6 +18,7 @@ public class HibernateUserStorage implements UserStorage {
     }
 
     @Override
+    @Transactional
     public boolean save(User user) {
         Session session = sessionFactory.openSession();
         session.save(user);

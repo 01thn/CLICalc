@@ -4,6 +4,7 @@ import org.example.entity.Operation;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class HibernateOperationStorage implements OperationStorage {
     }
 
     @Override
+    @Transactional
     public boolean save(Operation operation) {
         Session session = sessionFactory.openSession();
         session.save(operation);

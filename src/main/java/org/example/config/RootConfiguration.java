@@ -8,6 +8,7 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
+import javax.transaction.Transactional;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -16,6 +17,7 @@ import java.util.Scanner;
 
 @Configuration
 @ComponentScan(basePackages = "org.example")
+@EnableTransactionManagement
 public class RootConfiguration {
     private static String DB_URL = "jdbc:postgresql://localhost:5432/clicalc";
     private static String DB_USER = "postgres";
